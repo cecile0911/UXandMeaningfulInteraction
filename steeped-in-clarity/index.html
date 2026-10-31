@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="UX case study: redesigning the Lipton US website, by Cecile Yang.">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Steeped in Clarity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: sticky tea-tag index on the left, one reading column, wide before/after plates. */
+:root{
+  --paper:#F6F6F1; --sheet:#FFFFFF; --ink:#1F1A14; --muted:#6B6458; --line:#DEDBD0;
+  --yellow:#FFD100; --brew:#9A4A12; --leaf:#2F6B3A; --red:#C8102E;
+  --display:"Young Serif",Georgia,"Times New Roman",serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#15130F; --sheet:#1E1B16; --ink:#EEE9DF; --muted:#A8A092; --line:#36312A;
+  --yellow:#FFD100; --brew:#E39150; --leaf:#7FBF8A; --red:#FF6B7D; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#15130F; --sheet:#1E1B16; --ink:#EEE9DF; --muted:#A8A092; --line:#36312A;
+  --yellow:#FFD100; --brew:#E39150; --leaf:#7FBF8A; --red:#FF6B7D; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+a{color:inherit;text-decoration-color:var(--brew);text-underline-offset:3px}
+a:focus-visible{outline:2px solid var(--brew);outline-offset:3px}
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.22;text-wrap:balance;margin:0}
+p{margin:0}
+.mono{font-family:var(--mono);font-size:13px;letter-spacing:.04em}
+
+.wrap{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:200px minmax(0,1fr);gap:56px;padding-block:40px 96px}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 32px);align-self:start;display:flex;flex-direction:column;gap:6px}
+nav.toc .mono{color:var(--muted);margin-bottom:8px;text-transform:uppercase}
+nav.toc a{text-decoration:none;font-size:14px;color:var(--muted);padding:3px 0 3px 12px;border-left:2px solid var(--line)}
+nav.toc a:hover{color:var(--ink);border-left-color:var(--brew)}
+main{min-width:0;display:flex;flex-direction:column;gap:88px}
+@media (max-width:960px){
+  .wrap{grid-template-columns:minmax(0,1fr);gap:24px;padding-block:24px 72px}
+  nav.toc{position:static;flex-direction:row;flex-wrap:wrap;gap:6px}
+  nav.toc .mono{width:100%;margin:0}
+  nav.toc a{border:1px solid var(--line);border-radius:99px;padding:3px 10px;font-size:13px}
+  main{gap:64px}
+}
+.col{max-width:680px;display:flex;flex-direction:column;gap:18px}
+
+/* tea tag section label */
+.tag{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
+.tag::before{content:"";width:22px;height:28px;background:var(--yellow);clip-path:polygon(50% 0,100% 18%,100% 100%,0 100%,0 18%);flex:none}
+section h2{font-size:clamp(28px,4vw,40px);margin-top:4px}
+.lead{font-size:19px;color:var(--ink)}
+.muted{color:var(--muted)}
+
+/* hero */
+.hero{display:flex;flex-direction:column;gap:22px}
+.hero h1{font-size:clamp(42px,7.5vw,84px);line-height:1.08;letter-spacing:0}
+.hero h1 span{background:linear-gradient(transparent 62%,var(--yellow) 62%,var(--yellow) 92%,transparent 92%);padding:0 .06em}
+.hero .sub{font-size:clamp(19px,2.4vw,24px);color:var(--muted);max-width:620px}
+.meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding-block:18px}
+.meta>div{min-width:0;display:flex;flex-direction:column;gap:4px}
+.meta .mono{color:var(--muted);text-transform:uppercase;font-size:11px}
+.meta b{font-weight:500;font-size:15px}
+@media (max-width:640px){.meta{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+figure{margin:0;display:flex;flex-direction:column;gap:10px;min-width:0}
+figure img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:6px;background:var(--sheet)}
+figcaption{font-size:14px;color:var(--muted)}
+
+/* goals / lists */
+.goals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.goals>div{border-top:2px solid var(--ink);padding-top:12px;display:flex;flex-direction:column;gap:6px}
+.goals b{font-family:var(--display);font-weight:400;font-size:20px}
+@media (max-width:720px){.goals{grid-template-columns:minmax(0,1fr)}}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips span{border:1px solid var(--line);border-radius:99px;padding:4px 12px;font-size:14px;background:var(--sheet)}
+
+/* process line */
+.process{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;counter-reset:s;margin-top:20px}
+.process>div{position:relative;padding:34px 12px 0 0;border-top:2px solid var(--ink);display:flex;flex-direction:column;gap:4px;min-width:0}
+.process>div::before{counter-increment:s;content:counter(s);position:absolute;top:-13px;left:0;width:24px;height:24px;border-radius:50%;background:var(--yellow);color:#1F1A14;font-family:var(--mono);font-size:12px;display:grid;place-items:center}
+.process b{font-weight:500}
+.process span{font-size:14px;color:var(--muted)}
+@media (max-width:720px){.process{grid-template-columns:minmax(0,1fr);gap:22px}.process>div{border-top:none;border-left:2px solid var(--ink);padding:0 0 0 22px}.process>div::before{left:-13px;top:0}}
+
+/* method cards */
+.methods{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.method{background:var(--sheet);border:1px solid var(--line);border-radius:8px;padding:20px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.method .mono{color:var(--muted)}
+.method h3{font-size:22px}
+.method .big{font-family:var(--display);font-size:40px;line-height:1.15;color:var(--brew)}
+@media (max-width:640px){.methods{grid-template-columns:minmax(0,1fr)}}
+
+/* paths */
+.paths{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.pathbox{background:var(--sheet);border:1px solid var(--line);border-radius:8px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.pathbox h3{font-size:20px}
+.route{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:13.5px}
+.route .who{font-family:var(--mono);font-size:12px;width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--paper);display:grid;place-items:center;flex:none}
+.route span.s{border:1px solid var(--line);border-radius:4px;padding:2px 8px;background:var(--paper)}
+.route span.end{background:var(--yellow);color:#1F1A14;border-color:var(--yellow)}
+.route span.bad{background:var(--red);color:#fff;border-color:var(--red)}
+.route i{font-style:normal;color:var(--muted)}
+.route .t{margin-left:auto;padding-left:8px;white-space:nowrap;font-family:var(--mono);font-size:12.5px;color:var(--brew)}
+@media (max-width:800px){.paths{grid-template-columns:minmax(0,1fr)}}
+
+/* insights */
+.insights{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
+.insights>div{display:grid;grid-template-columns:48px minmax(0,1fr);gap:16px;padding-block:20px;border-bottom:1px solid var(--line)}
+.insights>div>div{min-width:0}
+.insights .n{font-family:var(--display);font-size:28px;color:var(--brew);line-height:1.2}
+.insights h3{font-size:22px;margin-bottom:6px}
+
+/* before / after */
+.pair{display:flex;flex-direction:column;gap:18px;padding-top:28px;border-top:1px solid var(--line)}
+.pair h3{font-size:26px}
+.ba{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start}
+figure>.lbl{align-self:flex-start;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:2px 8px;border-radius:3px}
+.lbl.b{background:var(--ink);color:var(--paper)}
+.lbl.a{background:var(--yellow);color:#1F1A14}
+.stack{display:flex;flex-direction:column;gap:12px}
+.ba .why{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;grid-column:1/-1}
+.why p b{font-weight:600}
+@media (max-width:760px){.ba,.ba .why{grid-template-columns:minmax(0,1fr)}}
+.principle{font-size:14px;color:var(--muted);border-left:3px solid var(--yellow);padding-left:12px}
+
+/* results */
+.results{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,2fr) auto;gap:20px;align-items:center;padding-block:18px;border-bottom:1px solid var(--line)}
+.row .name b{display:block;font-weight:500}
+.row .name a{font-size:13px;color:var(--muted)}
+.bars{display:flex;flex-direction:column;gap:6px;min-width:0}
+.bar{display:grid;grid-template-columns:52px minmax(0,1fr) 56px;gap:10px;align-items:center;font-family:var(--mono);font-size:12px}
+.bar .track{height:12px;background:var(--line);border-radius:2px;overflow:hidden}
+.bar .fill{height:100%;background:var(--muted)}
+.bar.after .fill{background:var(--brew)}
+.bar .v{text-align:right;font-variant-numeric:tabular-nums}
+.delta{font-family:var(--mono);font-size:13px;color:var(--leaf);white-space:nowrap}
+.delta.flat{color:var(--muted)}
+@media (max-width:760px){.row{grid-template-columns:minmax(0,1fr)}}
+.timer{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.timer>div{background:var(--sheet);border:1px solid var(--line);border-radius:8px;padding:18px;display:flex;flex-direction:column;gap:4px}
+.timer .mono{color:var(--muted);text-transform:uppercase;font-size:11px}
+.timer b{font-family:var(--display);font-weight:400;font-size:clamp(24px,2.6vw,32px);line-height:1.25;overflow-wrap:anywhere}
+.timer b small{font-size:18px;color:var(--muted)}
+@media (max-width:720px){.timer{grid-template-columns:minmax(0,1fr)}}
+.note{font-size:14px;color:var(--muted)}
+
+.feedback{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.feedback>div{background:var(--sheet);border:1px solid var(--line);border-radius:8px;padding:18px;display:flex;flex-direction:column;gap:8px}
+.feedback .mono{color:var(--muted)}
+@media (max-width:640px){.feedback{grid-template-columns:minmax(0,1fr)}}
+ol.learn{margin:0;padding:0;list-style:none;counter-reset:l;display:flex;flex-direction:column;gap:22px}
+ol.learn li{counter-increment:l;display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px}
+ol.learn li::before{content:counter(l,decimal-leading-zero);font-family:var(--mono);font-size:13px;color:var(--brew);padding-top:4px}
+.links{display:flex;flex-wrap:wrap;gap:10px}
+.links a{border:1px solid var(--ink);border-radius:99px;padding:6px 14px;text-decoration:none;font-size:14px}
+.links a:hover{background:var(--yellow);color:#1F1A14;border-color:var(--yellow)}
+.placeholder{border:1px dashed var(--line);border-radius:8px;padding:18px;color:var(--muted);font-style:italic}
+footer{border-top:1px solid var(--line);padding-top:20px;font-size:14px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="toc" aria-label="Sections">
+  <span class="mono">Contents</span>
+  <a href="#challenge">The challenge</a>
+  <a href="#role">My role</a>
+  <a href="#process">Process</a>
+  <a href="#research">Research</a>
+  <a href="#insights">Insights</a>
+  <a href="#solution">The redesign</a>
+  <a href="#validation">Validation</a>
+  <a href="#next">Feedback &amp; next steps</a>
+  <a href="#learnings">Learnings</a>
+  <a href="#ai">AI use</a>
+</nav>
+
+<main>
+<header class="hero">
+  <span class="tag">UX case study · Lipton US website</span>
+  <h1>Steeped in <span>Clarity</span></h1>
+  <p class="sub">Redesigning the Lipton website so people can find a tea, learn how to use it, and see where to buy it.</p>
+  <div class="meta">
+    <div><span class="mono">Role</span><b>Solo researcher &amp; designer</b></div>
+    <div><span class="mono">Methods</span><b>5-second, first-click, tree test, usability test, SUS</b></div>
+    <div><span class="mono">Tools</span><b>Figma · Lyssna · Miro</b></div>
+    <div><span class="mono">Context</span><b>RMIT · 2026</b></div>
+  </div>
+  <figure>
+    <img src="img/after-home.webp" alt="Redesigned Lipton homepage with a yellow hero, a Shop All Teas button and shop-by-tea-type cards" width="1440" height="612">
+    <figcaption>The redesigned homepage (hi-fi Figma prototype).</figcaption>
+  </figure>
+</header>
+
+<section id="challenge" class="col">
+  <span class="tag">The challenge</span>
+  <h2>A well-known brand, a hard-to-shop website</h2>
+  <p class="lead">Lipton's products are everywhere in supermarkets, but the website feels quite simple and has a lot of room for improvement.</p>
+  <p>My research question: <em>How easily can users discover Lipton products, understand how they can be used, and find where to buy them?</em></p>
+  <p>Every test used the same scenario: <em>"You've run out of black tea bags and want to buy some more as soon as possible for your daily morning and lunchtime tea. You're also curious about what other options might be worth trying besides your usual choice."</em></p>
+  <div class="goals">
+    <div><b>Discover</b><span class="muted">Find the right tea quickly, from any starting point.</span></div>
+    <div><b>Understand</b><span class="muted">See how to brew it and what to make with it.</span></div>
+    <div><b>Buy</b><span class="muted">Reach Where to Buy for the product you chose.</span></div>
+  </div>
+</section>
+
+<section id="role" class="col">
+  <span class="tag">My role</span>
+  <h2>One person, the whole loop</h2>
+  <p>This was a solo project. I planned and ran the tests, analysed the data, redesigned the site, built the prototype and tested it again with new participants.</p>
+  <div class="chips">
+    <span>User research</span><span>Problem statements</span><span>Critical thinking</span><span>User flows</span><span>Ideation</span><span>Prototyping</span><span>Customer needs</span>
+  </div>
+</section>
+
+<section id="process" class="col" style="max-width:none">
+  <span class="tag">Process</span>
+  <h2>Test, design, test again</h2>
+  <div class="process">
+    <div><b>Test the live site</b><span>Four methods + SUS</span></div>
+    <div><b>Define problems</b><span>11 problems in 4 areas</span></div>
+    <div><b>Wireframes</b><span>Grey structure and flows</span></div>
+    <div><b>Hi-fi prototype</b><span>Clickable, built on the test tasks</span></div>
+    <div><b>Re-test</b><span>Same tests, new participants</span></div>
+  </div>
+</section>
+
+<section id="research" class="col" style="max-width:none">
+  <span class="tag">Research</span>
+  <h2>What testing the live site revealed</h2>
+  <div class="methods">
+    <div class="method"><span class="mono">Five-second test · 10 participants</span><h3>First impression</h3><span class="big">3/10</span><p class="muted">expected to buy products on the homepage.</p></div>
+    <div class="method"><span class="mono">First-click test · 12 participants</span><h3>Where people start</h3><span class="big">3.67/5</span><p class="muted">confidence. Most clicks went to "Our Teas".</p></div>
+    <div class="method"><span class="mono">Tree test · 12 participants</span><h3>Menu structure</h3><span class="big">25%</span><p class="muted">found how to prepare tea. Finding a green-tea cold drink: 67% success, 25% direct.</p></div>
+    <div class="method"><span class="mono">Usability test · 3 participants</span><h3>Real browsing</h3><span class="big">64.2</span><p class="muted">average SUS score, below the 68 benchmark. One participant did not finish.</p></div>
+  </div>
+  <figure>
+    <img src="img/before-filters.webp" alt="Original Our Teas filter panel with Tea Types, Type, Format and Range groups that repeat the same options" width="1600" height="714" loading="lazy">
+    <figcaption>Original "Our Teas" filters: black, iced and powdered tea appear under several groups at once.</figcaption>
+  </figure>
+  <div class="paths">
+    <div class="pathbox">
+      <h3>Three people, three paths</h3>
+      <div class="route"><span class="who">A</span><span class="s">Search "black tea bag"</span><i>→</i><span class="s">Apple Cinnamon recipe</span><i>→</i><span class="s">Classic Black Tea</span><i>→</i><span class="s end">Where to Buy</span><span class="t">≈50 s</span></div>
+      <div class="route"><span class="who">B</span><span class="s">Shop Now</span><i>→</i><span class="s">Black Tea</span><i>→</i><span class="s end">Where to Buy</span><span class="t">≈13.5 s</span></div>
+      <div class="route"><span class="who">C</span><span class="s">Shop Now</span><i>→</i><span class="s">Powdered Teas</span><i>→</i><span class="s">Wrong product</span><i>→</i><span class="s bad">Stuck</span><span class="t">not done</span></div>
+      <p class="note">Original website, moderated usability test.</p>
+    </div>
+    <div class="pathbox">
+      <h3>Different starts, one ending</h3>
+      <div class="route"><span class="who">1</span><span class="s">Tea-type card</span><i>→</i><span class="s">Black Teas</span><i>→</i><span class="s">Black Tea 100</span><i>→</i><span class="s end">Where to Buy</span><span class="t">≈14 s</span></div>
+      <div class="route"><span class="who">2</span><span class="s">Our Teas menu</span><i>→</i><span class="s">Black Teas</span><i>→</i><span class="s end">Where to Buy</span><span class="t">≈13 s</span></div>
+      <div class="route"><span class="who">3</span><span class="s">Search</span><i>→</i><span class="s">Black Tea 100</span><i>→</i><span class="s end">Where to Buy</span><span class="t">≈9 s</span></div>
+      <p class="note">Redesigned prototype, three new participants. Participant 1 found the Where to Buy button but did not click it.</p>
+    </div>
+  </div>
+</section>
+
+<section id="insights" class="col">
+  <span class="tag">Insights</span>
+  <h2>The look was fine. The structure wasn't.</h2>
+  <p>At first I thought the homepage visuals were distracting people. The tests showed that most participants understood what the site was for. They got stuck on how it was organised.</p>
+  <div class="insights">
+    <div><span class="n">1</span><div><h3>Buttons didn't say where they go</h3><p class="muted">Two participants clicked the same "Shop Now" and landed on different pages. One ended up on powdered mixes and opened Where to Buy for the wrong product.</p></div></div>
+    <div><span class="n">2</span><div><h3>Search favoured recipes over products</h3><p class="muted">Searching for a product returned recipes first. "Apple" returned 3 recipes and 0 products.</p></div></div>
+    <div><span class="n">3</span><div><h3>Categories overlapped</h3><p class="muted">Tea type, temperature and content type were mixed together, so people found recipes, but rarely on the first try.</p></div></div>
+    <div><span class="n">4</span><div><h3>Brewing help was hidden</h3><p class="muted">Preparation guides sat under "How To's &amp; Hacks" next to party ideas and travel stories. Only 3 of 12 found them.</p></div></div>
+    <div><span class="n">5</span><div><h3>Products and recipes lived apart</h3><p class="muted">You couldn't browse recipes by the tea you already had, and related recipes were easy to scroll past.</p></div></div>
+  </div>
+</section>
+
+<section id="solution" class="col" style="max-width:none">
+  <span class="tag">The redesign</span>
+  <h2>Before, then after</h2>
+  <p style="max-width:680px">I kept Lipton's colours and the parts that already worked, and changed the structure and navigation.</p>
+
+  <article class="pair">
+    <h3>Products first in search</h3>
+    <div class="ba">
+      <figure><span class="lbl b">Before</span><img src="img/before-search.webp" alt="Original search results for apple showing Products (0) and Recipes (3)" width="1600" height="714" loading="lazy"><figcaption>Searching "apple": 0 products, 3 recipes.</figcaption></figure>
+      <figure><span class="lbl a">After</span><img src="img/after-search.webp" alt="Redesigned search results with a product match at the top and a Where to Buy button" width="916" height="571" loading="lazy"><figcaption>The matching product comes first, with Where to Buy right there.</figcaption></figure>
+    </div>
+    <p class="principle">Information scent: clear labels help people predict where a link leads (Johnson, 2021).</p>
+  </article>
+
+  <article class="pair">
+    <h3>Buttons that say where they go</h3>
+    <div class="ba">
+      <figure><span class="lbl b">Before</span><img src="img/before-home.webp" alt="Original Lipton homepage hero with a large logo and product packs but no clear shopping path" width="1600" height="652" loading="lazy"><figcaption>The original hero shows products but no clear way to shop them.</figcaption></figure>
+      <div class="stack">
+        <figure><span class="lbl a">After</span><img src="img/after-shoptype.webp" alt="Shop by tea type cards: Black, Iced, Green, Powdered, Fruit and Herbal" width="916" height="200" loading="lazy"></figure>
+        <figure><img src="img/after-wtb.webp" alt="Where to Buy side panel listing retailers for the selected product" width="480" height="520" loading="lazy" style="max-width:300px"><figcaption>"Shop All Teas" and tea-type cards lead to one product page and one Where to Buy panel, which shows the product you clicked.</figcaption></figure>
+      </div>
+    </div>
+  </article>
+
+  <article class="pair">
+    <h3>Two filters instead of mixed categories</h3>
+    <div class="ba">
+      <figure><span class="lbl b">Before</span><img src="img/before-recipes.webp" alt="Original recipes page with four circles: Green Tea Recipes, Iced Tea Recipes, Hot Tea Recipes, How To's and Hacks" width="1600" height="572" loading="lazy"><figcaption>Four categories mixing tea type, temperature and content type.</figcaption></figure>
+      <figure><span class="lbl a">After</span><img src="img/after-recipes.webp" alt="Redesigned recipes page with Tea type and Temperature filters, search and sort" width="916" height="571" loading="lazy"><figcaption>Filter by tea type and temperature, plus search and sort.</figcaption></figure>
+    </div>
+  </article>
+
+  <article class="pair">
+    <h3>Brewing gets its own page</h3>
+    <div class="ba">
+      <figure><span class="lbl b">Before</span><img src="img/before-howto.webp" alt="Original How To's and Hacks section mixing a tea party guide, a story about Japan and a green tea brewing guide" width="1076" height="460" loading="lazy"><figcaption>"How To's &amp; Hacks" mixed party ideas and travel stories with the one brewing guide.</figcaption></figure>
+      <figure><span class="lbl a">After</span><img src="img/after-brew.webp" alt="How to brew Lipton tea page" width="916" height="175" loading="lazy"><figcaption>A dedicated "How to brew" page, linked from the menu and product pages.</figcaption></figure>
+    </div>
+  </article>
+
+  <article class="pair">
+    <h3>Recipes linked to products</h3>
+    <div class="ba"><figure style="grid-column:1/-1"><span class="lbl b">Before</span><img src="img/before-recipe-link.webp" alt="Annotated summary from my earlier research: no Black Tea recipes category, recipes hard to find, related recipes scrolled past" width="1600" height="587" loading="lazy"><figcaption>From my earlier analysis of the live site: no way to browse recipes by tea, and related recipes on product pages were easy to miss.</figcaption></figure></div>
+    <div class="ba">
+      <figure><span class="lbl a">After</span><img src="img/after-product.webp" alt="Black Tea 100 product page with Where to Buy and a link to ways to enjoy" width="916" height="392" loading="lazy"><figcaption>The product page links straight to brewing and recipes.</figcaption></figure>
+      <figure><span class="lbl a">After</span><img src="img/after-ways.webp" alt="Ways to enjoy Black Tea section with brewing steps and recipe cards labelled with the tea they use" width="916" height="300" loading="lazy"><figcaption>"Ways to enjoy": every recipe names the tea it uses.</figcaption></figure>
+    </div>
+    <p class="principle">Recognition over recall: show the next step instead of making people remember where to look (Johnson, 2021).</p>
+  </article>
+
+  <article class="pair">
+    <h3>Easier to notice, easier to go back</h3>
+    <div class="ba">
+      <figure><span class="lbl b">Before</span><img src="img/before-carousel.webp" alt="Original recipe carousel with thin arrows at the far edges and tiny dots" width="1600" height="569" loading="lazy"><figcaption>Thin arrows sit at the far edges and the dots are tiny.</figcaption></figure>
+      <figure><span class="lbl a">After</span><img src="img/after-carousel.webp" alt="Featured carousel with solid arrow buttons and a 1 of 5 counter" width="916" height="456" loading="lazy"><figcaption>Solid arrows and a "1 / 5" counter on the carousel.</figcaption></figure>
+    </div>
+    <div class="ba">
+      <figure><span class="lbl a">After</span><img src="img/after-breadcrumb.webp" alt="Breadcrumb navigation on the product page" width="916" height="162" loading="lazy"></figure>
+      <figure><span class="lbl a">After</span><img src="img/after-recovery.webp" alt="Not what you were looking for links on the search page" width="916" height="137" loading="lazy"><figcaption>Breadcrumbs, a Home link and "Not what you were looking for?" links.</figcaption></figure>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://www.figma.com/proto/Q5VsfNYyNJZvtMdqJiJiwA/lipton?t=U8KsWyh6NMNBhlPr-1&amp;scaling=scale-down&amp;content-scaling=fixed&amp;page-id=0%3A1&amp;node-id=35-481&amp;starting-point-node-id=35%3A481" target="_blank" rel="noopener">Try the prototype</a>
+    <a href="https://www.figma.com/design/Q5VsfNYyNJZvtMdqJiJiwA/lipton" target="_blank" rel="noopener">Open the Figma file</a>
+  </div>
+</section>
+
+<section id="validation" class="col" style="max-width:none">
+  <span class="tag">Validation</span>
+  <h2>Same tests, new people</h2>
+  <p style="max-width:680px">I re-ran every test on the prototype with participants who hadn't seen the original. Each row links to the full Lyssna results.</p>
+  <div class="timer">
+    <div><span class="mono">Found black tea Where to Buy</span><b>2/3 → 3/3</b></div>
+    <div><span class="mono">Average time</span><b>≈32 s → ≈12 s</b></div>
+    <div><span class="mono">SUS score</span><b>64.2 → 75.8</b></div>
+  </div>
+  <div class="results">
+    <div class="row">
+      <div class="name"><b>Tree test · cold green-tea drink</b><a href="https://app.lyssna.com/tests/j6pmred5lstq/results/tt0yuruolaci" target="_blank" rel="noopener">Before</a> · <a href="https://app.lyssna.com/tests/zjaztytlzkgd/results/gmurkxkgma7k" target="_blank" rel="noopener">After</a></div>
+      <div class="bars"><div class="bar"><span>before</span><div class="track"><div class="fill" style="width:67%"></div></div><span class="v">67%</span></div><div class="bar after"><span>after</span><div class="track"><div class="fill" style="width:100%"></div></div><span class="v">100%</span></div></div>
+      <span class="delta">+33 pts</span>
+    </div>
+    <div class="row">
+      <div class="name"><b>Tree test · how to prepare tea</b><a href="https://app.lyssna.com/tests/j6pmred5lstq/results/tt0yuruolaci" target="_blank" rel="noopener">Before</a> · <a href="https://app.lyssna.com/tests/zjaztytlzkgd/results/gmurkxkgma7k" target="_blank" rel="noopener">After</a></div>
+      <div class="bars"><div class="bar"><span>before</span><div class="track"><div class="fill" style="width:25%"></div></div><span class="v">25%</span></div><div class="bar after"><span>after</span><div class="track"><div class="fill" style="width:83%"></div></div><span class="v">83%</span></div></div>
+      <span class="delta">+58 pts</span>
+    </div>
+    <div class="row">
+      <div class="name"><b>First-click · confidence</b><a href="https://app.lyssna.com/tests/dyzuezmuyymj/results/t0aaabucre5x" target="_blank" rel="noopener">Before</a> · <a href="https://app.lyssna.com/tests/cgirrpdurkoq/results/kefx2dicemur" target="_blank" rel="noopener">After</a></div>
+      <div class="bars"><div class="bar"><span>before</span><div class="track"><div class="fill" style="width:73.4%"></div></div><span class="v">3.67/5</span></div><div class="bar after"><span>after</span><div class="track"><div class="fill" style="width:86.6%"></div></div><span class="v">4.33/5</span></div></div>
+      <span class="delta">+0.66</span>
+    </div>
+    <div class="row">
+      <div class="name"><b>Five-second · expected to buy</b><a href="https://app.lyssna.com/tests/wxhz5opkytfm/results/o3qylilatp0d" target="_blank" rel="noopener">Before</a> · <a href="https://app.lyssna.com/tests/ma6gfr3bcqb4/results/9pgbfu9ecvqe" target="_blank" rel="noopener">After</a></div>
+      <div class="bars"><div class="bar"><span>before</span><div class="track"><div class="fill" style="width:30%"></div></div><span class="v">3/10</span></div><div class="bar after"><span>after</span><div class="track"><div class="fill" style="width:40%"></div></div><span class="v">2/5</span></div></div>
+      <span class="delta flat">little change</span>
+    </div>
+    <div class="row">
+      <div class="name"><b>SUS score</b><span class="note">3 participants per round</span></div>
+      <div class="bars"><div class="bar"><span>before</span><div class="track"><div class="fill" style="width:64.2%"></div></div><span class="v">64.2</span></div><div class="bar after"><span>after</span><div class="track"><div class="fill" style="width:75.8%"></div></div><span class="v">75.8</span></div></div>
+      <span class="delta">+11.6</span>
+    </div>
+  </div>
+  <p class="note">Samples are small (5–6 per Lyssna re-test, 3 per usability round), so these results are indicative. The tree-test answer key was re-scored for both rounds: preparation guides in other sections also count as correct. Participant 1's time was measured to finding the Where to Buy button.</p>
+</section>
+
+<section id="next" class="col">
+  <span class="tag">Feedback &amp; next steps</span>
+  <h2>What still needs work</h2>
+  <p>The numbers and the testers' written feedback point to the same gap: the site still doesn't push people towards buying. Only 2 of 5 mentioned buying in the five-second test, and one participant saw Where to Buy but kept browsing.</p>
+  <div class="feedback">
+    <div><span class="mono">Tester feedback</span><p>Make the recipe labels simpler and more direct.</p></div>
+    <div><span class="mono">Tester feedback</span><p>Give "How to brew" a higher place in the hierarchy.</p></div>
+    <div><span class="mono">Tester feedback</span><p>The homepage doesn't really invite people to scroll down.</p></div>
+    <div><span class="mono">Tester feedback</span><p>Show retailer names directly in Where to Buy.</p></div>
+  </div>
+  <p><b>Next:</b> simplify recipe labels, move "How to brew" up, and make buying information more visible on the homepage and product page.</p>
+</section>
+
+<section id="learnings" class="col">
+  <span class="tag">Learnings</span>
+  <h2>What I learnt</h2>
+  <ol class="learn">
+    <li><p>A website's problems can be very obvious or very easy to miss. Usability testing gives you a chance to see the site from other people's point of view. People use a website with different ways of thinking, and this often reveals many interesting problems.</p></li>
+    <li><p>Guiding users through a whole website is not as easy as it seems. Some people start scrolling straight away, while others go to the navigation bar first to find the fastest way to their goal. It is hard to know why people behave this way, but a clearer page that guides them is usually the better choice.</p></li>
+    <li><p>The way information is organised is very important. Poor categories can make an otherwise successful website useless: users get lost, confused, and cannot reach their goals. Tree testing can also reveal these hidden problems.</p></li>
+  </ol>
+</section>
+
+<section id="ai" class="col">
+  <span class="tag">AI use</span>
+  <h2>How I used AI</h2>
+  <p>I used AI to organise, analyse, and calculate the data collected from user testing, assist in creating some of the prototypes in Figma, verify interactive functionality, and help with translation and language refinement.</p>
+  <p class="note">References: Johnson, J. (2021). <em>Designing with the mind in mind</em> (3rd ed.). Morgan Kaufmann. · Krug, S. (2014). <em>Don't make me think, revisited</em> (3rd ed.). New Riders. · Nielsen, J. (2024). 10 usability heuristics for user interface design. Nielsen Norman Group.</p>
+</section>
+
+<footer>Cecile Yang · Steeped in Clarity, a Lipton website redesign · Thanks to everyone who took part in the tests.</footer>
+</main>
+</div>
+
+</body>
+</html>
